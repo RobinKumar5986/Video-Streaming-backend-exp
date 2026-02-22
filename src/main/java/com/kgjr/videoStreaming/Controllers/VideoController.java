@@ -4,7 +4,6 @@ package com.kgjr.videoStreaming.Controllers;
 import com.kgjr.videoStreaming.entaties.Videos;
 import com.kgjr.videoStreaming.payload.CustomMessage;
 import com.kgjr.videoStreaming.services.VideoService;
-import org.apache.coyote.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/v1/videos")
 public class VideoController {
@@ -24,7 +21,7 @@ public class VideoController {
     private VideoService videoService;
 
     @PostMapping("/")
-    public ResponseEntity<CustomMessage> create(
+    public ResponseEntity<?> create(
             @RequestParam("file") MultipartFile file,
             @RequestParam("title") String title,
             @RequestParam("description") String description
@@ -39,7 +36,7 @@ public class VideoController {
         if (savedVideo != null) {
             msg.setSuccess(true);
             msg.setMessage("Video Uploaded Successfully");
-            return ResponseEntity.status(HttpStatus.CREATED).body(msg);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedVideo);
         } else {
             msg.setSuccess(false);
             msg.setMessage("Video Upload Failed");

@@ -1,6 +1,5 @@
 package com.kgjr.videoStreaming.services.impl;
 
-import ch.qos.logback.core.util.StringUtil;
 import com.kgjr.videoStreaming.entaties.Videos;
 import com.kgjr.videoStreaming.repo.VideoRepo;
 import com.kgjr.videoStreaming.services.VideoService;
@@ -18,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VideoServiceImpl implements VideoService {
@@ -78,7 +78,13 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     public Videos getVideosById(String videoId) {
-        return null;
+        try {
+           Optional<Videos> video = videoRepository.findById(videoId);
+           return video.orElse(null);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

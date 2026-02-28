@@ -14,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/videos")
 public class VideoController {
@@ -64,5 +67,12 @@ public class VideoController {
                 .ok()
                 .contentType(MediaType.parseMediaType(contentType))
                 .body(resource);
+    }
+
+
+    //func to get all the videos
+    @GetMapping("/stream/all")
+    public List<Videos> getAllVideos() {
+        return videoService.getAllVideos();
     }
 }

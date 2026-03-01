@@ -1,12 +1,14 @@
 package com.kgjr.videoStreaming.Controllers;
 
 
+import com.kgjr.videoStreaming.AppConstants;
 import com.kgjr.videoStreaming.entaties.Videos;
 import com.kgjr.videoStreaming.payload.CustomMessage;
 import com.kgjr.videoStreaming.services.VideoService;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -118,11 +120,13 @@ public class VideoController {
             String[] allRange = range.replace("bytes=","").split("-");
 
             rangeStart = Long.parseLong( allRange[0] );
-            if(range.length() > 1){
-                rangeEnd = Long.parseLong( allRange[1]);
-            }else{
-                rangeEnd = fileLength - rangeStart;
-            }
+            rangeEnd = rangeStart + AppConstants.CHUNK_SIZE - 1;
+
+//            if(range.length() > 1){
+//                rangeEnd = Long.parseLong( allRange[1]);
+//            }else{
+//                rangeEnd = fileLength - rangeStart;
+//            }
             if(rangeEnd > fileLength - 1) {
                 rangeEnd  = fileLength - 1;
             }
@@ -132,6 +136,9 @@ public class VideoController {
                 inputStream = Files.newInputStream(path);
                 inputStream.skip(rangeStart);
                 long contentLength = rangeEnd - rangeStart + 1;
+
+
+                System.out.println("read (number of bytes: " + read);
                 HttpHeaders headers = new HttpHeaders();
                 headers.add("content-range", "bytes " + rangeStart + "-"+rangeEnd + "/"+fileLength);
                 headers.setContentLength(contentLength);
@@ -141,7 +148,8 @@ public class VideoController {
                         .headers(headers)
                         .contentType(MediaType.parseMediaType(contentType))
 //                        .body(new InputStreamResource(inputStream));// sending the entire range of byte from the specific index
-                        .body(new ResourceRegion(resource, rangeStart, contentLength).getResource()); //sending some specific range
+//                        .body(new ResourceRegion(resource, rangeStart, contentLength).getResource()); //sending some specific range
+                        .body(new ByteArrayResource(data));
 
 
 

@@ -136,7 +136,8 @@ public class VideoController {
                 inputStream = Files.newInputStream(path);
                 inputStream.skip(rangeStart);
                 long contentLength = rangeEnd - rangeStart + 1;
-
+                byte[] data = new byte[(int)contentLength];
+                int read = inputStream.read(data,0,data.length);
 
                 System.out.println("read (number of bytes: " + read);
                 HttpHeaders headers = new HttpHeaders();
